@@ -123,7 +123,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:padding="10dp"
-        android:text="Resend OTP"
+        android:text="@string/resend_otp"
         android:textColor="#000000"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView" />

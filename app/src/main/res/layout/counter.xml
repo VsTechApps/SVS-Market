@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="20dp">
 
     <Button
         android:id="@+id/minus"
@@ -10,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
         android:padding="0dp"
-        android:text="-"
+        android:text="@string/minus"
         android:textSize="30sp"
         app:layout_constraintEnd_toStartOf="@+id/count"
         app:layout_constraintTop_toTopOf="parent" />
@@ -19,7 +20,12 @@
         android:id="@+id/count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1"
+        android:autofillHints="@string/app_name"
+        android:hint="@string/_1"
+        android:inputType="none"
+        android:text="@string/_1"
+        android:enabled="false"
+        android:textColor="@android:color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:padding="0dp"
-        android:text="+"
+        android:text="@string/plus"
         android:textSize="30sp"
         app:layout_constraintStart_toEndOf="@+id/count"
         app:layout_constraintTop_toTopOf="parent" />

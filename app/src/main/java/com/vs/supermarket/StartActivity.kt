@@ -144,10 +144,10 @@ class StartActivity : AppCompatActivity() {
         } else {
             AlertDialog.Builder(this)
                 .setTitle("Disclaimer")
-                .setMessage("This app is only for people in Tenali who wants to order from Sri Vigneswara Super Market")
-                .setPositiveButton("OK") { dialogInterface: DialogInterface, i: Int ->
+                .setMessage("This app is for people in Tenali and Surrounding areas who wants to order from SVS Market")
+                .setPositiveButton("OK") { dialogInterface: DialogInterface, _: Int ->
                     dialogInterface.dismiss()
-                }.setNegativeButton("Not Ok") { dialogInterface: DialogInterface, i: Int ->
+                }.setNegativeButton("Not Ok") { dialogInterface: DialogInterface, _: Int ->
                     dialogInterface.dismiss()
                     finish()
                 }.show()

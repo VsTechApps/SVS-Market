@@ -37,4 +37,12 @@
     <string name="add_item">Add Item</string>
     <string name="orders">Orders</string>
     <string name="your_name">Your Name</string>
+    <string name="total_cost_0_0">Total Cost : 0.0</string>
+    <string name="proceed">Proceed</string>
+    <string name="resend_otp">Resend OTP</string>
+    <string name="minus">-</string>
+    <string name="_1">1</string>
+    <string name="plus">+</string>
+    <string name="order_by">Order By :</string>
+    <string name="phone_number_">Phone Number :</string>
 </resources>

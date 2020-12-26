@@ -38,7 +38,7 @@ class GroceryFragment : Fragment(), GroceryAdapter.OnItemClickListener {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_grocery, container, false)
-        val query: Query = groceryRef.orderBy("name", Query.Direction.DESCENDING)
+        val query: Query = groceryRef.orderBy("name", Query.Direction.ASCENDING)
         val options = FirestoreRecyclerOptions.Builder<GroceryItem>()
             .setQuery(query, GroceryItem::class.java)
             .build()
@@ -83,16 +83,23 @@ class GroceryFragment : Fragment(), GroceryAdapter.OnItemClickListener {
         }
 
         plus.setOnClickListener {
-            counter.text = Editable.Factory.getInstance()
-                .newEditable((counter.text.toString().toInt() + 1).toString())
+            if(counter.text.toString().toInt() < 10){
+                counter.text = Editable.Factory.getInstance()
+                    .newEditable((counter.text.toString().toInt() + 1).toString())
+            } else {
+                Toast.makeText(context, "Max Quantity can not be grater than 10", Toast.LENGTH_SHORT).show()
+            }
         }
 
         minus.setOnClickListener {
-            counter.text = Editable.Factory.getInstance()
-                .newEditable((counter.text.toString().toInt() - 1).toString())
+            if (counter.text.toString().toInt() > 1){
+                counter.text = Editable.Factory.getInstance()
+                    .newEditable((counter.text.toString().toInt() - 1).toString())
+            }
         }
 
         AlertDialog.Builder(context!!)
+            .setTitle("Quantity")
             .setView(dialogView)
             .setPositiveButton("Add") { dialogInterface: DialogInterface, _: Int ->
                 val data = hashMapOf(

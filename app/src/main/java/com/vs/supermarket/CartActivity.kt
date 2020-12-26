@@ -49,7 +49,7 @@ class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
             proceed.visibility = View.GONE
         }
 
-        val query: Query = cartRef.orderBy("id", Query.Direction.DESCENDING)
+        val query: Query = cartRef.orderBy("id", Query.Direction.ASCENDING)
         val options = FirestoreRecyclerOptions.Builder<CartItem>()
             .setQuery(query, CartItem::class.java)
             .build()
@@ -185,13 +185,19 @@ class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
         counter.text = Editable.Factory.getInstance().newEditable(item.count)
 
         plus.setOnClickListener {
-            counter.text = Editable.Factory.getInstance()
-                .newEditable((counter.text.toString().toInt() + 1).toString())
+            if(counter.text.toString().toInt() < 10){
+                counter.text = Editable.Factory.getInstance()
+                    .newEditable((counter.text.toString().toInt() + 1).toString())
+            } else {
+                Toast.makeText(this, "Max Quantity can not be grater than 10", Toast.LENGTH_SHORT).show()
+            }
         }
 
         minus.setOnClickListener {
-            counter.text = Editable.Factory.getInstance()
-                .newEditable((counter.text.toString().toInt() - 1).toString())
+            if (counter.text.toString().toInt() > 0){
+                counter.text = Editable.Factory.getInstance()
+                    .newEditable((counter.text.toString().toInt() - 1).toString())
+            }
         }
 
         AlertDialog.Builder(this)
@@ -202,7 +208,7 @@ class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
                     "count" to counter.text.toString(),
                     "category" to item.category
                 )
-                if (counter.text.toString() == "0") {
+                if (counter.text.toString().toInt() <= 0) {
                     cartRef.document(item.id).delete()
                     getTotalCost()
                 } else {
