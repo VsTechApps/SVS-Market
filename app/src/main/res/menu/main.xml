@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/admin"
+        android:icon="@drawable/ic_person"
+        android:title="@string/admin"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/orders"
+        android:icon="@drawable/ic_orders"
+        android:title="@string/orders"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/phone"
+        android:icon="@drawable/ic_phone_white"
+        android:title="@string/phone"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/whatsApp"
+        android:icon="@drawable/ic_whatsapp"
+        android:title="@string/whatsapp"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/logOut"
+        android:icon="@drawable/ic_log_out"
+        android:title="@string/logout"
+        app:showAsAction="ifRoom" />
+
+</menu>
