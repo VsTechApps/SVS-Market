@@ -3,25 +3,22 @@ package com.vs.supermarket.fragments
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.firebase.ui.firestore.paging.FirestorePagingOptions
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.ktx.Firebase
 import com.vs.supermarket.AdminEditItemsActivity
+import com.vs.supermarket.App
+import com.vs.supermarket.App.Companion.detergentsRef
 import com.vs.supermarket.R
 import com.vs.supermarket.adapters.GroceryAdapter
 import com.vs.supermarket.models.GroceryItem
@@ -30,11 +27,8 @@ import java.util.*
 class DetergentsFragment : Fragment(), GroceryAdapter.OnItemClickListener {
 
     private val category = "detergents"
-    private val db = FirebaseFirestore.getInstance()
-    private val detergentRef = db.collection("items").document(category).collection("items")
     private lateinit var adapter: GroceryAdapter
-    private val auth = Firebase.auth
-    lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerView: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,12 +37,16 @@ class DetergentsFragment : Fragment(), GroceryAdapter.OnItemClickListener {
         val root = inflater.inflate(R.layout.fragment_grocery, container, false)
 
         recyclerView = root.findViewById(R.id.foodView)
-        val query: Query = detergentRef.orderBy("name", Query.Direction.ASCENDING)
-        val options = FirestoreRecyclerOptions.Builder<GroceryItem>()
-            .setQuery(query, GroceryItem::class.java)
+        val query: Query = detergentsRef.orderBy("name", Query.Direction.ASCENDING)
+        val pageConfig = PagedList.Config.Builder().setInitialLoadSizeHint(10)
+            .setPageSize(5)
             .build()
 
-        adapter = GroceryAdapter(context!!, this, options, "")
+        val options = FirestorePagingOptions.Builder<GroceryItem>()
+            .setQuery(query, pageConfig, GroceryItem::class.java)
+            .build()
+
+        adapter = GroceryAdapter(context!!, this, options)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
@@ -63,10 +61,14 @@ class DetergentsFragment : Fragment(), GroceryAdapter.OnItemClickListener {
 
     private fun recyclerView(text: String) {
 
-        val query: Query = detergentRef.orderBy("name", Query.Direction.ASCENDING)
+        val query: Query = detergentsRef.orderBy("name", Query.Direction.ASCENDING)
             .startAt(text.toUpperCase(Locale.ROOT)).endAt("${text.toLowerCase(Locale.ROOT)}\uf8ff")
-        val options = FirestoreRecyclerOptions.Builder<GroceryItem>()
-            .setQuery(query, GroceryItem::class.java)
+        val pageConfig = PagedList.Config.Builder().setInitialLoadSizeHint(10)
+            .setPageSize(5)
+            .build()
+
+        val options = FirestorePagingOptions.Builder<GroceryItem>()
+            .setQuery(query, pageConfig, GroceryItem::class.java)
             .build()
 
         adapter.updateOptions(options)
@@ -83,75 +85,7 @@ class DetergentsFragment : Fragment(), GroceryAdapter.OnItemClickListener {
     }
 
     override fun onClickListener(item: GroceryItem) {
-        val cartRef = db.collection("users").document(auth.currentUser?.uid!!).collection("cart")
-        val inflater = activity!!.layoutInflater
-        val dialogView: View = inflater.inflate(R.layout.counter, null)
-
-        val plus = dialogView.findViewById<Button>(R.id.plus)
-        val minus = dialogView.findViewById<Button>(R.id.minus)
-        val counter = dialogView.findViewById<EditText>(R.id.count)
-
-        cartRef.document(item.id).addSnapshotListener { value, error ->
-            if (error == null) {
-                if (value?.get("count") != null) {
-                    counter.text =
-                        Editable.Factory.getInstance().newEditable(value.get("count").toString())
-                } else {
-                    counter.text = Editable.Factory.getInstance().newEditable("1")
-                }
-            } else {
-                counter.text = Editable.Factory.getInstance().newEditable("1")
-            }
-        }
-
-        plus.setOnClickListener {
-            if (counter.text.toString().toInt() < 10) {
-                counter.text = Editable.Factory.getInstance()
-                    .newEditable((counter.text.toString().toInt() + 1).toString())
-            } else {
-                Toast.makeText(
-                    context,
-                    "Max Quantity can not be grater than 10",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-
-        minus.setOnClickListener {
-            if (counter.text.toString().toInt() > 1) {
-                counter.text = Editable.Factory.getInstance()
-                    .newEditable((counter.text.toString().toInt() - 1).toString())
-            }
-        }
-
-        AlertDialog.Builder(context!!)
-            .setTitle("Quantity")
-            .setView(dialogView)
-            .setPositiveButton("Add") { dialogInterface: DialogInterface, _: Int ->
-                val data = hashMapOf(
-                    "id" to item.id,
-                    "count" to counter.text.toString(),
-                    "category" to "detergents"
-                )
-                cartRef.document(item.id).set(data)
-                    .addOnSuccessListener {
-                        Toast.makeText(
-                            context,
-                            "Added Successfully",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                    .addOnFailureListener { e ->
-                        Toast.makeText(
-                            context,
-                            "Error ${e.message}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                dialogInterface.dismiss()
-            }.setNegativeButton("Cancel") { dialogInterface: DialogInterface, _: Int ->
-                dialogInterface.dismiss()
-            }.show()
+        App.onClickItems(item, context!!, activity!!, category)
     }
 
     override fun onLongClickListener(item: GroceryItem) {
@@ -169,10 +103,10 @@ class DetergentsFragment : Fragment(), GroceryAdapter.OnItemClickListener {
                 startActivity(intent)
                 dialogInterface.dismiss()
             }.setNegativeButton("Delete") { dialogInterface: DialogInterface, _: Int ->
-                detergentRef.document(item.id).delete()
+                detergentsRef.document(item.id).delete()
                 Snackbar.make(requireView(), "Task Deleted", Snackbar.LENGTH_LONG)
                     .setAction("UNDO") {
-                        detergentRef.document(item.id).set(item)
+                        detergentsRef.document(item.id).set(item)
                     }.show()
                 dialogInterface.dismiss()
             }.show()

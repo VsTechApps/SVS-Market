@@ -45,14 +45,20 @@ class CartAdapter(
 
         itemRef.get().addOnSuccessListener {
             if (it.exists()) {
-                Picasso.get().load(it.getString("image").toString()).into(holder.image)
+                Picasso.get()
+                    .load(it.getString("image").toString())
+                    .placeholder(R.drawable.logo)
+                    .into(holder.image)
+
                 holder.name.text = it.getString("name").toString()
                 holder.price.text = "Price : ${it.getString("price").toString()}/-"
                 holder.originalPrice.paint.isStrikeThruText = true
                 holder.originalPrice.text = it.getString("realPrice").toString()
                 holder.counter.text = "Quantity : ${model.count}"
 
-                if (it.getString("price").toString().toInt() >= it.getString("realPrice").toString().toInt()) {
+                if (it.getString("price").toString().toInt() >= it.getString("realPrice").toString()
+                        .toInt()
+                ) {
                     holder.originalPrice.visibility = View.GONE
                 } else {
                     holder.originalPrice.visibility = View.VISIBLE

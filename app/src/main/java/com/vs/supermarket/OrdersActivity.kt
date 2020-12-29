@@ -6,9 +6,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.firebase.ui.firestore.paging.FirestorePagingOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -32,9 +34,11 @@ class OrdersActivity : AppCompatActivity(), OrdersAdapter.OnItemClickListener {
         setContentView(R.layout.activity_orders)
 
         val query: Query = ordersRef.orderBy("id", Query.Direction.DESCENDING)
+
         val options = FirestoreRecyclerOptions.Builder<OrderItem>()
             .setQuery(query, OrderItem::class.java)
             .build()
+
         adapter = OrdersAdapter(this, this, options)
         recyclerView = findViewById(R.id.ordersView)
         recyclerView.setHasFixedSize(true)
@@ -65,7 +69,7 @@ class OrdersActivity : AppCompatActivity(), OrdersAdapter.OnItemClickListener {
         AlertDialog.Builder(this)
             .setTitle("Delete")
             .setMessage("Are you sure you want to delete")
-            .setPositiveButton("Delete") { dialogInterface: DialogInterface, i: Int ->
+            .setPositiveButton("Delete") { dialogInterface: DialogInterface, _: Int ->
                 ordersRef.document(item.id).delete()
                 Snackbar.make(layout, "Item Deleted", Snackbar.LENGTH_LONG).setAction("UNDO") {
                     ordersRef.document(item.id).set(item).addOnSuccessListener {
@@ -73,7 +77,7 @@ class OrdersActivity : AppCompatActivity(), OrdersAdapter.OnItemClickListener {
                     }
                 }.show()
                 dialogInterface.dismiss()
-            }.setNegativeButton("Cancle") { dialogInterface: DialogInterface, i: Int ->
+            }.setNegativeButton("Cancle") { dialogInterface: DialogInterface, _: Int ->
                 dialogInterface.dismiss()
             }.show()
     }

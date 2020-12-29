@@ -8,8 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.firebase.ui.firestore.paging.FirestorePagingAdapter
+import com.firebase.ui.firestore.paging.FirestorePagingOptions
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
@@ -20,9 +20,8 @@ import com.vs.supermarket.models.GroceryItem
 class GroceryAdapter(
     val context: Context,
     val listener: OnItemClickListener,
-    options: FirestoreRecyclerOptions<GroceryItem>,
-    searchWord: String
-) : FirestoreRecyclerAdapter<GroceryItem, GroceryAdapter.GroceryHolder>(options) {
+    options: FirestorePagingOptions<GroceryItem>
+) : FirestorePagingAdapter<GroceryItem, GroceryAdapter.GroceryHolder>(options) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -80,7 +79,7 @@ class GroceryAdapter(
                         }
                     }
                     if (position != RecyclerView.NO_POSITION && !notAllowOnclick) {
-                        listener.onClickListener(item)
+                        listener.onClickListener(item?.toObject(GroceryItem::class.java)!!)
                     } else if (notAllowOnclick) {
                         Toast.makeText(
                             context,
@@ -100,7 +99,7 @@ class GroceryAdapter(
                             val position = adapterPosition
                             if (position != RecyclerView.NO_POSITION) {
                                 val item = getItem(position)
-                                listener.onLongClickListener(item)
+                                listener.onLongClickListener(item?.toObject(GroceryItem::class.java)!!)
                             }
                         }
                     }

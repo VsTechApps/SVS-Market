@@ -7,10 +7,7 @@ import android.text.Editable
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,6 +20,7 @@ import com.google.firebase.ktx.Firebase
 import com.vs.supermarket.adapters.CartAdapter
 import com.vs.supermarket.models.CartItem
 import com.vs.supermarket.models.OrderItem
+
 
 class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
 
@@ -43,26 +41,29 @@ class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
 
         cost = findViewById(R.id.cost)
         val proceed = findViewById<Button>(R.id.proceed)
+        val bill = findViewById<Button>(R.id.bill)
+        recyclerView = findViewById(R.id.cartView)
 
         if (intent.getBooleanExtra("fromOrders", false)) {
             cartRef =
                 db.collection("users").document(intent.getStringExtra("uid").toString())
                     .collection("cart")
             proceed.visibility = View.GONE
+            bill.visibility = View.VISIBLE
         }
+
+        getTotalCost()
 
         val query: Query = cartRef.orderBy("id", Query.Direction.ASCENDING)
         val options = FirestoreRecyclerOptions.Builder<CartItem>()
             .setQuery(query, CartItem::class.java)
             .build()
         adapter = CartAdapter(this, this, options)
-        recyclerView = findViewById(R.id.cartView)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
         proceed.setOnClickListener {
-
             ordersRef.get().addOnSuccessListener { document ->
                 document.documents.forEach { order ->
                     if (order.get("userId").toString() == auth.currentUser?.uid) {
@@ -89,7 +90,9 @@ class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
             }
         }
 
-        getTotalCost()
+        bill.setOnClickListener {
+
+        }
     }
 
     private fun order() {
