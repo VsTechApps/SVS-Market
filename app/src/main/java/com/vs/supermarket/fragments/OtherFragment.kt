@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +25,7 @@ import com.vs.supermarket.AdminEditItemsActivity
 import com.vs.supermarket.R
 import com.vs.supermarket.adapters.GroceryAdapter
 import com.vs.supermarket.models.GroceryItem
+import java.util.*
 
 class OtherFragment : Fragment(), GroceryAdapter.OnItemClickListener {
 
@@ -32,22 +34,42 @@ class OtherFragment : Fragment(), GroceryAdapter.OnItemClickListener {
     private val otherRef = db.collection("items").document(category).collection("items")
     private lateinit var adapter: GroceryAdapter
     private val auth = Firebase.auth
+    lateinit var recyclerView: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_grocery, container, false)
+
+        recyclerView = root.findViewById(R.id.foodView)
         val query: Query = otherRef.orderBy("name", Query.Direction.ASCENDING)
         val options = FirestoreRecyclerOptions.Builder<GroceryItem>()
             .setQuery(query, GroceryItem::class.java)
             .build()
-        adapter = GroceryAdapter(context!!, this, options)
-        val recyclerView: RecyclerView = root.findViewById(R.id.foodView)
+
+        adapter = GroceryAdapter(context!!, this, options, "")
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
+
+        val search = root.findViewById<EditText>(R.id.search)
+        search.doOnTextChanged { text, _, _, _ ->
+            recyclerView(text.toString().trim())
+        }
+
         return root
+    }
+
+    private fun recyclerView(text: String) {
+
+        val query: Query = otherRef.orderBy("name", Query.Direction.ASCENDING)
+            .startAt(text.toUpperCase(Locale.ROOT)).endAt("${text.toLowerCase(Locale.ROOT)}\uf8ff")
+        val options = FirestoreRecyclerOptions.Builder<GroceryItem>()
+            .setQuery(query, GroceryItem::class.java)
+            .build()
+
+        adapter.updateOptions(options)
     }
 
     override fun onStart() {

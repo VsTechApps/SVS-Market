@@ -20,8 +20,8 @@
         <activity android:name=".App" />
         <activity
             android:name=".StartActivity"
-            android:theme="@style/AppThemeNoActionBar"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

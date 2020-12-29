@@ -52,8 +52,10 @@ class CartAdapter(
                 holder.originalPrice.text = it.getString("realPrice").toString()
                 holder.counter.text = "Quantity : ${model.count}"
 
-                if (it.getString("price").toString() >= it.getString("realPrice").toString()) {
+                if (it.getString("price").toString().toInt() >= it.getString("realPrice").toString().toInt()) {
                     holder.originalPrice.visibility = View.GONE
+                } else {
+                    holder.originalPrice.visibility = View.VISIBLE
                 }
             }
         }

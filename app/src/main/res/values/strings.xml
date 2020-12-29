@@ -5,7 +5,8 @@
     <string name="tab_text_3">Grocery</string>
     <string name="tab_text_4">Beverages</string>
     <string name="tab_text_5">Detergents</string>
-    <string name="tab_text_6">Others</string>
+    <string name="tab_text_6">Kitchen &amp; Cleaning</string>
+    <string name="tab_text_7">Other</string>
     <string name="cart">Cart</string>
     <string name="password">Password</string>
     <string name="email">Email</string>
@@ -45,4 +46,8 @@
     <string name="plus">+</string>
     <string name="order_by">Order By :</string>
     <string name="phone_number_">Phone Number :</string>
+    <string name="search">Search</string>
+    <string name="kitchen">kitchen</string>
+    <string name="image">image</string>
+    <string name="delete_all">Delete All</string>
 </resources>

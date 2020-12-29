@@ -4,6 +4,8 @@ import android.R.attr.*
 import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -22,7 +24,6 @@ import com.vs.supermarket.adapters.CartAdapter
 import com.vs.supermarket.models.CartItem
 import com.vs.supermarket.models.OrderItem
 
-
 class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
 
     private val db = FirebaseFirestore.getInstance()
@@ -34,6 +35,7 @@ class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
     private lateinit var adapter: CartAdapter
     private lateinit var cost: TextView
     private lateinit var recyclerView: RecyclerView
+    private var notAllowOnclick = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,19 +61,12 @@ class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
-        var notAllowOnclick = false
-
         proceed.setOnClickListener {
 
             ordersRef.get().addOnSuccessListener { document ->
                 document.documents.forEach { order ->
                     if (order.get("userId").toString() == auth.currentUser?.uid) {
                         notAllowOnclick = true
-                        Toast.makeText(
-                            this,
-                            order.get("userId").toString(),
-                            Toast.LENGTH_LONG
-                        ).show()
                     }
                 }
                 if (!notAllowOnclick) {
@@ -154,6 +149,52 @@ class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
         adapter.stopListening()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.cart, menu)
+
+        if (intent.getBooleanExtra("fromOrders", false)) {
+            menu.findItem(R.id.deleteAll).isVisible = false
+        }
+
+        ordersRef.get().addOnSuccessListener { document ->
+            document.documents.forEach { order ->
+                if (order.get("userId").toString() == auth.currentUser?.uid) {
+                    notAllowOnclick = true
+                }
+
+                if (notAllowOnclick) {
+                    menu.findItem(R.id.deleteAll).isVisible = false
+                }
+            }
+        }
+
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+        if (id == R.id.deleteAll) {
+            AlertDialog.Builder(this)
+                .setTitle("Are You Sure?")
+                .setMessage("Are You Sure you want to Empty the cart")
+                .setPositiveButton("Yes") { dialogInterface: DialogInterface, _: Int ->
+                    cartRef.addSnapshotListener { value, error ->
+                        if (error == null) {
+                            value?.documents?.forEach { documentSnapshot ->
+                                documentSnapshot.reference.delete()
+                            }
+                        }
+                    }
+                    dialogInterface.dismiss()
+                }.setNegativeButton("No") { dialogInterface: DialogInterface, _: Int ->
+                    dialogInterface.dismiss()
+                }.show()
+            return false
+        } else {
+            return false
+        }
+    }
+
     private fun getTotalCost() {
         var totalCost = 0f
 
@@ -185,16 +226,17 @@ class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
         counter.text = Editable.Factory.getInstance().newEditable(item.count)
 
         plus.setOnClickListener {
-            if(counter.text.toString().toInt() < 10){
+            if (counter.text.toString().toInt() < 10) {
                 counter.text = Editable.Factory.getInstance()
                     .newEditable((counter.text.toString().toInt() + 1).toString())
             } else {
-                Toast.makeText(this, "Max Quantity can not be grater than 10", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Max Quantity can not be grater than 10", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
 
         minus.setOnClickListener {
-            if (counter.text.toString().toInt() > 0){
+            if (counter.text.toString().toInt() > 0) {
                 counter.text = Editable.Factory.getInstance()
                     .newEditable((counter.text.toString().toInt() - 1).toString())
             }

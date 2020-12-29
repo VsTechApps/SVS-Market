@@ -27,11 +27,11 @@ import com.vs.supermarket.adapters.GroceryAdapter
 import com.vs.supermarket.models.GroceryItem
 import java.util.*
 
-class DetergentsFragment : Fragment(), GroceryAdapter.OnItemClickListener {
+class KitchenHomeCleaningFragment : Fragment(), GroceryAdapter.OnItemClickListener {
 
-    private val category = "detergents"
+    private val category = "kitchen"
     private val db = FirebaseFirestore.getInstance()
-    private val detergentRef = db.collection("items").document(category).collection("items")
+    private val kitchenRef = db.collection("items").document(category).collection("items")
     private lateinit var adapter: GroceryAdapter
     private val auth = Firebase.auth
     lateinit var recyclerView: RecyclerView
@@ -43,7 +43,7 @@ class DetergentsFragment : Fragment(), GroceryAdapter.OnItemClickListener {
         val root = inflater.inflate(R.layout.fragment_grocery, container, false)
 
         recyclerView = root.findViewById(R.id.foodView)
-        val query: Query = detergentRef.orderBy("name", Query.Direction.ASCENDING)
+        val query: Query = kitchenRef.orderBy("name", Query.Direction.ASCENDING)
         val options = FirestoreRecyclerOptions.Builder<GroceryItem>()
             .setQuery(query, GroceryItem::class.java)
             .build()
@@ -63,7 +63,7 @@ class DetergentsFragment : Fragment(), GroceryAdapter.OnItemClickListener {
 
     private fun recyclerView(text: String) {
 
-        val query: Query = detergentRef.orderBy("name", Query.Direction.ASCENDING)
+        val query: Query = kitchenRef.orderBy("name", Query.Direction.ASCENDING)
             .startAt(text.toUpperCase(Locale.ROOT)).endAt("${text.toLowerCase(Locale.ROOT)}\uf8ff")
         val options = FirestoreRecyclerOptions.Builder<GroceryItem>()
             .setQuery(query, GroceryItem::class.java)
@@ -131,7 +131,7 @@ class DetergentsFragment : Fragment(), GroceryAdapter.OnItemClickListener {
                 val data = hashMapOf(
                     "id" to item.id,
                     "count" to counter.text.toString(),
-                    "category" to "detergents"
+                    "category" to category
                 )
                 cartRef.document(item.id).set(data)
                     .addOnSuccessListener {
@@ -169,10 +169,10 @@ class DetergentsFragment : Fragment(), GroceryAdapter.OnItemClickListener {
                 startActivity(intent)
                 dialogInterface.dismiss()
             }.setNegativeButton("Delete") { dialogInterface: DialogInterface, _: Int ->
-                detergentRef.document(item.id).delete()
+                kitchenRef.document(item.id).delete()
                 Snackbar.make(requireView(), "Task Deleted", Snackbar.LENGTH_LONG)
                     .setAction("UNDO") {
-                        detergentRef.document(item.id).set(item)
+                        kitchenRef.document(item.id).set(item)
                     }.show()
                 dialogInterface.dismiss()
             }.show()

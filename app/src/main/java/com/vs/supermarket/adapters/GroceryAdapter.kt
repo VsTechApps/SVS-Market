@@ -20,7 +20,8 @@ import com.vs.supermarket.models.GroceryItem
 class GroceryAdapter(
     val context: Context,
     val listener: OnItemClickListener,
-    options: FirestoreRecyclerOptions<GroceryItem>
+    options: FirestoreRecyclerOptions<GroceryItem>,
+    searchWord: String
 ) : FirestoreRecyclerAdapter<GroceryItem, GroceryAdapter.GroceryHolder>(options) {
 
     override fun onCreateViewHolder(
@@ -44,8 +45,10 @@ class GroceryAdapter(
         holder.price.text = "Price : " + model.price + "/-"
         holder.originalPrice.paint.isStrikeThruText = true
         holder.originalPrice.text = model.realPrice
-        if (model.price >= model.realPrice) {
+        if (model.price.toInt() >= model.realPrice.toInt()) {
             holder.originalPrice.visibility = View.GONE
+        } else {
+            holder.originalPrice.visibility = View.VISIBLE
         }
     }
 
