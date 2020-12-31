@@ -28,6 +28,7 @@ class AdminAddItemsActivity : AppCompatActivity() {
     private lateinit var mrp: EditText
     private lateinit var imageUrl: EditText
     private lateinit var progress: ProgressBar
+    private lateinit var outOfStock: CheckBox
 
     private lateinit var mImageUri: Uri
     private lateinit var mStorageRef: StorageReference
@@ -42,6 +43,7 @@ class AdminAddItemsActivity : AppCompatActivity() {
         itemPrice = findViewById(R.id.itemPrice)
         mrp = findViewById(R.id.mrp)
         imageUrl = findViewById(R.id.imageUrl)
+        outOfStock = findViewById(R.id.outOfStock)
 
         val uploadImage = findViewById<Button>(R.id.uploadImage)
         val uploadItem = findViewById<Button>(R.id.uploadItem)
@@ -167,7 +169,8 @@ class AdminAddItemsActivity : AppCompatActivity() {
             "name" to name,
             "price" to price,
             "realPrice" to realPrice,
-            "image" to image
+            "image" to image,
+            "outOfStock" to outOfStock.isChecked.toString()
         )
         itemRef.set(data).addOnSuccessListener {
             itemName.text = Editable.Factory.getInstance().newEditable("")

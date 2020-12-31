@@ -7,9 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import com.smarteist.autoimageslider.SliderViewAdapter
-import com.squareup.picasso.Picasso
 import com.vs.supermarket.R
 import com.vs.supermarket.models.SliderItem
 

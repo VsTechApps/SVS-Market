@@ -6,11 +6,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.firebase.ui.firestore.paging.FirestorePagingOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -62,6 +60,7 @@ class OrdersActivity : AppCompatActivity(), OrdersAdapter.OnItemClickListener {
         val intent = Intent(this, CartActivity::class.java)
         intent.putExtra("uid", item.userId)
         intent.putExtra("fromOrders", true)
+        intent.putExtra("name", item.name)
         startActivity(intent)
     }
 
@@ -77,7 +76,7 @@ class OrdersActivity : AppCompatActivity(), OrdersAdapter.OnItemClickListener {
                     }
                 }.show()
                 dialogInterface.dismiss()
-            }.setNegativeButton("Cancle") { dialogInterface: DialogInterface, _: Int ->
+            }.setNegativeButton("Cancel") { dialogInterface: DialogInterface, _: Int ->
                 dialogInterface.dismiss()
             }.show()
     }

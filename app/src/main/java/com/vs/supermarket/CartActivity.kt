@@ -2,12 +2,15 @@ package com.vs.supermarket
 
 import android.R.attr.*
 import android.content.DialogInterface
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.text.Editable
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +23,9 @@ import com.google.firebase.ktx.Firebase
 import com.vs.supermarket.adapters.CartAdapter
 import com.vs.supermarket.models.CartItem
 import com.vs.supermarket.models.OrderItem
+import java.io.File
+import java.io.FileWriter
+import java.util.*
 
 
 class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
@@ -35,6 +41,7 @@ class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
     private lateinit var recyclerView: RecyclerView
     private var notAllowOnclick = false
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cart)
@@ -90,8 +97,62 @@ class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
             }
         }
 
-        bill.setOnClickListener {
+        var billText = "Name , Qty , Price , Total \n"
 
+        cartRef.get().addOnSuccessListener { snapshot ->
+            snapshot?.forEach { model ->
+                val itemRef =
+                    db.collection("items").document(model.getString("category")!!)
+                        .collection("items").document(model.getString("id")!!)
+
+                itemRef.get().addOnSuccessListener {
+                    if (it.exists()) {
+                        billText += "${it.get("name").toString()} ," +
+                                "${model.getString("count").toString()} ," +
+                                "${it.getString("price").toString()} ," +
+                                "${
+                                    model.getString("count").toString()
+                                        .toFloat() * it.getString("price").toString().toFloat()
+                                }\n"
+
+                    }
+                }
+            }
+        }
+
+        bill.setOnClickListener {
+            billText += ",,Total Cost : ,${cost.text.toString().replace("Total Cost : ","")}"
+            writeToFile(billText)
+        }
+    }
+
+    private fun writeToFile(billText: String) {
+        val file = File(
+            Environment.getExternalStorageDirectory().absolutePath,
+            "SVS Market"
+        )
+        if (!file.exists()) {
+            file.mkdir()
+        }
+        try {
+            val billFile = File(
+                file, intent.getStringExtra("name")?.toLowerCase(Locale.ROOT)
+                    ?.trim() + "-" + System.currentTimeMillis().toString() + ".csv"
+            )
+
+            val writer = FileWriter(billFile)
+
+            writer.append(billText)
+            writer.flush()
+            writer.close()
+
+            Toast.makeText(
+                this,
+                "Saved your text${billFile.absolutePath}",
+                Toast.LENGTH_LONG
+            ).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error!${e.message.toString()}", Toast.LENGTH_LONG).show()
         }
     }
 

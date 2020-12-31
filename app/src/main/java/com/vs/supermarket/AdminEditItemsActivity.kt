@@ -28,6 +28,7 @@ class AdminEditItemsActivity : AppCompatActivity() {
     private lateinit var imageUrl: EditText
     private lateinit var categoryRadioGroup: RadioGroup
     private lateinit var progress: ProgressBar
+    private lateinit var outOfStock: CheckBox
 
     private lateinit var mImageUri: Uri
     private lateinit var mStorageRef: StorageReference
@@ -43,6 +44,7 @@ class AdminEditItemsActivity : AppCompatActivity() {
         mrp = findViewById(R.id.mrp)
         imageUrl = findViewById(R.id.imageUrl)
         categoryRadioGroup = findViewById(R.id.category)
+        outOfStock = findViewById(R.id.outOfStock)
 
         val uploadImage = findViewById<Button>(R.id.uploadImage)
         val uploadItem = findViewById<Button>(R.id.uploadItem)
@@ -60,6 +62,7 @@ class AdminEditItemsActivity : AppCompatActivity() {
         itemPrice.text = Editable.Factory.getInstance().newEditable(intent.getStringExtra("price"))
         mrp.text = Editable.Factory.getInstance().newEditable(intent.getStringExtra("realPrice"))
         imageUrl.text = Editable.Factory.getInstance().newEditable(intent.getStringExtra("image"))
+        outOfStock.isChecked = intent.getStringExtra("isOutOfStock").toBoolean()
 
         when {
             intent.getStringExtra("category") == "food" -> {
@@ -193,7 +196,8 @@ class AdminEditItemsActivity : AppCompatActivity() {
             "name" to name,
             "price" to price,
             "realPrice" to realPrice,
-            "image" to image
+            "image" to image,
+            "outOfStock" to outOfStock.isChecked.toString()
         )
         itemRef.document(intent.getStringExtra("id")!!).update(data).addOnSuccessListener {
             itemName.text = Editable.Factory.getInstance().newEditable("")
@@ -201,6 +205,7 @@ class AdminEditItemsActivity : AppCompatActivity() {
             mrp.text = Editable.Factory.getInstance().newEditable("")
             imageUrl.text = Editable.Factory.getInstance().newEditable("")
             Toast.makeText(this, "Updated Successfully", Toast.LENGTH_SHORT).show()
+            finish()
         }.addOnFailureListener {
             Toast.makeText(this, "Error!", Toast.LENGTH_SHORT).show()
         }

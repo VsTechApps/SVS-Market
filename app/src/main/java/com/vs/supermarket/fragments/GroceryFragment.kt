@@ -10,10 +10,9 @@ import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.firebase.ui.firestore.paging.FirestorePagingOptions
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.Query
 import com.vs.supermarket.AdminEditItemsActivity
@@ -39,12 +38,8 @@ class GroceryFragment : Fragment(), GroceryAdapter.OnItemClickListener {
         recyclerView = root.findViewById(R.id.foodView)
         val query: Query = groceryRef.orderBy("name", Query.Direction.ASCENDING)
 
-        val pageConfig = PagedList.Config.Builder().setInitialLoadSizeHint(10)
-            .setPageSize(5)
-            .build()
-
-        val options = FirestorePagingOptions.Builder<GroceryItem>()
-            .setQuery(query, pageConfig, GroceryItem::class.java)
+        val options = FirestoreRecyclerOptions.Builder<GroceryItem>()
+            .setQuery(query, GroceryItem::class.java)
             .build()
 
         adapter = GroceryAdapter(context!!, this, options)
@@ -64,12 +59,8 @@ class GroceryFragment : Fragment(), GroceryAdapter.OnItemClickListener {
 
         val query: Query = groceryRef.orderBy("name", Query.Direction.ASCENDING)
             .startAt(text.toUpperCase(Locale.ROOT)).endAt("${text.toLowerCase(Locale.ROOT)}\uf8ff")
-        val pageConfig = PagedList.Config.Builder().setInitialLoadSizeHint(10)
-            .setPageSize(5)
-            .build()
-
-        val options = FirestorePagingOptions.Builder<GroceryItem>()
-            .setQuery(query, pageConfig, GroceryItem::class.java)
+        val options = FirestoreRecyclerOptions.Builder<GroceryItem>()
+            .setQuery(query, GroceryItem::class.java)
             .build()
 
         adapter.updateOptions(options)
@@ -101,6 +92,7 @@ class GroceryFragment : Fragment(), GroceryAdapter.OnItemClickListener {
                 intent.putExtra("realPrice", item.realPrice)
                 intent.putExtra("image", item.image)
                 intent.putExtra("category", category)
+                intent.putExtra("isOutOfStock", item.outOfStock)
                 startActivity(intent)
                 dialogInterface.dismiss()
             }.setNegativeButton("Delete") { dialogInterface: DialogInterface, _: Int ->
