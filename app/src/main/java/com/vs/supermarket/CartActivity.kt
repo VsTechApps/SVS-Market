@@ -27,7 +27,6 @@ import java.io.File
 import java.io.FileWriter
 import java.util.*
 
-
 class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
 
     private val db = FirebaseFirestore.getInstance()
@@ -71,6 +70,7 @@ class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
         recyclerView.adapter = adapter
 
         proceed.setOnClickListener {
+
             ordersRef.get().addOnSuccessListener { document ->
                 document.documents.forEach { order ->
                     if (order.get("userId").toString() == auth.currentUser?.uid) {
@@ -121,7 +121,7 @@ class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
         }
 
         bill.setOnClickListener {
-            billText += ",,Total Cost : ,${cost.text.toString().replace("Total Cost : ","")}"
+            billText += ",,Total Cost : ,${cost.text.toString().replace("Total Cost : ", "")}"
             writeToFile(billText)
         }
     }
@@ -181,6 +181,7 @@ class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
                             )
 
                             document.set(orderItem).addOnSuccessListener {
+
                                 Toast.makeText(
                                     this@CartActivity,
                                     "We have Successfully got you request we will call you to confirm order",
@@ -340,4 +341,5 @@ class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
                 dialogInterface.dismiss()
             }.show()
     }
+
 }

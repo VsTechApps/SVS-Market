@@ -10,11 +10,9 @@ import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.firebase.ui.firestore.paging.FirestorePagingOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.Query
 import com.vs.supermarket.AdminEditItemsActivity
