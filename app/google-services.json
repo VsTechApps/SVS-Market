@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "91352644225",
+    "project_id": "tenalis-mart",
+    "storage_bucket": "tenalis-mart.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:91352644225:android:2e827dbb6ac7856ccb2b80",
+        "android_client_info": {
+          "package_name": "com.tenalis.mart"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "91352644225-40k30re7guif9vabfobdji8b9jihkaqp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVcpUghb04qZSmrL_WgVCQNVrMwhZmdlg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "91352644225-40k30re7guif9vabfobdji8b9jihkaqp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
