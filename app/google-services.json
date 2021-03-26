@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "862580019319",
+    "project_id": "super-market-e8890",
+    "storage_bucket": "super-market-e8890.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:862580019319:android:1f57dad682f3b170163672",
+        "android_client_info": {
+          "package_name": "com.vs.supermarket"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "862580019319-a5jae337gsq91hm6ju94k3vhav29lp4k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDf3Dyahn0cuBnV7aKGQ8yvxwc5fOrKd9A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "862580019319-a5jae337gsq91hm6ju94k3vhav29lp4k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
