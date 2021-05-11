@@ -2,21 +2,24 @@ package com.vs.supermarket
 
 import android.R.attr.*
 import android.content.DialogInterface
-import android.os.Build
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.text.Editable
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
@@ -40,7 +43,12 @@ class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
     private lateinit var recyclerView: RecyclerView
     private var notAllowOnclick = false
 
-    @RequiresApi(Build.VERSION_CODES.N)
+    private val code = 123
+    private val tezPackageName = "com.google.android.apps.nbu.paisa.user"
+
+    private lateinit var document: DocumentReference
+    private lateinit var orderItem: OrderItem
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cart)
@@ -136,7 +144,7 @@ class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
         }
         try {
             val billFile = File(
-                file, intent.getStringExtra("name")?.toLowerCase(Locale.ROOT)
+                file, intent.getStringExtra("name")?.lowercase(Locale.ROOT)
                     ?.trim() + "-" + System.currentTimeMillis().toString() + ".csv"
             )
 
@@ -165,14 +173,15 @@ class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
                 val inflater = this.layoutInflater
                 val dialogView: View = inflater.inflate(R.layout.edit_text, null)
                 val name = dialogView.findViewById<EditText>(R.id.name)
+                val payNow = dialogView.findViewById<MaterialCheckBox>(R.id.payNow)
 
                 AlertDialog.Builder(this)
                     .setTitle("Your Name")
                     .setView(dialogView)
                     .setPositiveButton("Confirm") { dialog: DialogInterface, _: Int ->
                         if (name.text.isNotEmpty()) {
-                            val document = ordersRef.document()
-                            val orderItem = OrderItem(
+                            document = ordersRef.document()
+                            orderItem = OrderItem(
                                 document.id,
                                 name.text.toString(),
                                 cost.text.toString(),
@@ -180,17 +189,37 @@ class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
                                 auth.currentUser?.phoneNumber!!
                             )
 
-                            document.set(orderItem).addOnSuccessListener {
-
-                                Toast.makeText(
-                                    this@CartActivity,
-                                    "We have Successfully got you request we will call you to confirm order",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }.addOnFailureListener {
-                                Toast.makeText(this@CartActivity, "Error!", Toast.LENGTH_SHORT)
-                                    .show()
+                            if (payNow.isChecked) {
+                                val uri: Uri = Uri.Builder()
+                                    .scheme("upi")
+                                    .authority("pay")
+                                    .appendQueryParameter("pa", "nageswararao.vsm@unionbank")
+                                    .appendQueryParameter("pn", "SVS Market")
+                                    .appendQueryParameter(
+                                        "tr",
+                                        System.currentTimeMillis().toString()
+                                    )
+                                    .appendQueryParameter("mc", "BCR2DN6TV6M43AAP")
+                                    .appendQueryParameter("tn", "Payment to SVS Market")
+                                    .appendQueryParameter(
+                                        "url",
+                                        "https://srivigneswarasupermarket.business.site"
+                                    )
+                                    .appendQueryParameter(
+                                        "am",
+                                        cost.text.toString().replace("Total Cost : ", "")
+                                            .split(".")[0]
+                                    )
+                                    .appendQueryParameter("cu", "INR")
+                                    .build()
+                                val intent = Intent(Intent.ACTION_VIEW)
+                                intent.data = uri
+                                intent.setPackage(tezPackageName)
+                                startActivityForResult(intent, code)
+                            } else {
+                                placeOrder()
                             }
+
                         } else {
                             name.error = "Enter Your Name"
                         }
@@ -202,6 +231,32 @@ class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
             }.setNegativeButton("Cancel") { dialogInterface: DialogInterface, _: Int ->
                 dialogInterface.dismiss()
             }.show()
+    }
+
+    private fun placeOrder() {
+        document.set(orderItem).addOnSuccessListener {
+
+            Toast.makeText(
+                this@CartActivity,
+                "We have Successfully got you request we will call you to confirm order",
+                Toast.LENGTH_LONG
+            ).show()
+
+
+        }.addOnFailureListener {
+            Toast.makeText(this@CartActivity, "Error!", Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == code) {
+            if (data?.getStringExtra("Status")!! == "SUCCESS") {
+                placeOrder()
+            }
+            Log.d("result", data.getStringExtra("Status")!!)
+        }
     }
 
     override fun onStart() {
