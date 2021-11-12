@@ -43,7 +43,7 @@ class FoodFragment : Fragment(), GroceryAdapter.OnItemClickListener {
             .setQuery(query, GroceryItem::class.java)
             .build()
 
-        adapter = GroceryAdapter(context!!, this, options)
+        adapter = GroceryAdapter(requireContext(), this, options)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
@@ -58,7 +58,7 @@ class FoodFragment : Fragment(), GroceryAdapter.OnItemClickListener {
 
     private fun recyclerView(text: String) {
         val query: Query = foodRef.orderBy("name", Query.Direction.ASCENDING)
-            .startAt(text.toUpperCase(Locale.ROOT)).endAt("${text.toLowerCase(Locale.ROOT)}\uf8ff")
+            .startAt(text.uppercase(Locale.ROOT)).endAt("${text.lowercase(Locale.ROOT)}\uf8ff")
         val options = FirestoreRecyclerOptions.Builder<GroceryItem>()
             .setQuery(query, GroceryItem::class.java)
             .build()
@@ -77,11 +77,11 @@ class FoodFragment : Fragment(), GroceryAdapter.OnItemClickListener {
     }
 
     override fun onClickListener(item: GroceryItem) {
-        App.onClickItems(item, context!!, category)
+        App.onClickItems(item, requireContext(), category)
     }
 
     override fun onLongClickListener(item: GroceryItem) {
-        AlertDialog.Builder(context!!)
+        AlertDialog.Builder(requireContext())
             .setTitle("Edit")
             .setMessage("Edit/Delete items")
             .setPositiveButton("Edit") { dialogInterface: DialogInterface, _: Int ->

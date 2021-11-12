@@ -49,13 +49,13 @@
             android:id="@+id/ad1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ad1" />
+            android:text="@string/ad1" />
 
         <RadioButton
             android:id="@+id/ad2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ad2" />
+            android:text="@string/ad2" />
     </RadioGroup>
 
     <ProgressBar

@@ -16,6 +16,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -185,7 +186,7 @@ class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
         }
         try {
             billFile = File(
-                file, intent.getStringExtra("name")?.toLowerCase(Locale.ROOT)
+                file, intent.getStringExtra("name")?.lowercase(Locale.ROOT)
                     ?.trim() + "-" + System.currentTimeMillis().toString() + ".csv"
             )
 
@@ -249,7 +250,7 @@ class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
                                 val intent = Intent(Intent.ACTION_VIEW)
                                 intent.data = uri
                                 intent.setPackage(tezPackageName)
-                                startActivityForResult(intent, code)
+                                resultLauncher.launch(intent)
                             } else {
                                 placeOrder()
                             }
@@ -283,15 +284,15 @@ class CartActivity : AppCompatActivity(), CartAdapter.OnItemClickListener {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == code) {
-            if (data?.getStringExtra("Status")!! == "SUCCESS") {
-                placeOrder()
+    private var resultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == code) {
+                if (result.data?.getStringExtra("Status")!! == "SUCCESS") {
+                    placeOrder()
+                }
+                Log.d("result", result.data!!.getStringExtra("Status")!!)
             }
-            Log.d("result", data.getStringExtra("Status")!!)
         }
-    }
 
     override fun onStart() {
         super.onStart()

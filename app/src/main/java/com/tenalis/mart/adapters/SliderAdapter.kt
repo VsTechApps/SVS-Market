@@ -1,6 +1,5 @@
 package com.tenalis.mart.adapters
 
-import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +11,7 @@ import com.squareup.picasso.Picasso
 import com.tenalis.mart.R
 import com.tenalis.mart.models.SliderItem
 
-class SliderAdapter(private val context: Context) :
+class SliderAdapter :
     SliderViewAdapter<SliderAdapter.SliderAdapterVH>() {
     private var mSliderItems: MutableList<SliderItem> = ArrayList()
     fun renewItems(sliderItems: MutableList<SliderItem>) {

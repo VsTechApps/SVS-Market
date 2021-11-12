@@ -10,17 +10,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.ktx.Firebase
 import com.tenalis.mart.adapters.OrdersAdapter
 import com.tenalis.mart.models.OrderItem
 
 class OrdersActivity : AppCompatActivity(), OrdersAdapter.OnItemClickListener {
 
     private val db = FirebaseFirestore.getInstance()
-    private val auth = Firebase.auth
     private val ordersRef =
         db.collection("orders")
     private lateinit var adapter: OrdersAdapter
@@ -30,6 +27,9 @@ class OrdersActivity : AppCompatActivity(), OrdersAdapter.OnItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_orders)
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
 
         val query: Query = ordersRef.orderBy("id", Query.Direction.DESCENDING)
 
@@ -56,6 +56,11 @@ class OrdersActivity : AppCompatActivity(), OrdersAdapter.OnItemClickListener {
         adapter.stopListening()
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
+
     override fun onClickListener(item: OrderItem) {
         val intent = Intent(this, CartActivity::class.java)
         intent.putExtra("uid", item.userId)
@@ -72,7 +77,7 @@ class OrdersActivity : AppCompatActivity(), OrdersAdapter.OnItemClickListener {
                 ordersRef.document(item.id).delete()
                 Snackbar.make(layout, "Item Deleted", Snackbar.LENGTH_LONG).setAction("UNDO") {
                     ordersRef.document(item.id).set(item).addOnSuccessListener {
-                        Snackbar.make(layout, "Item Restored", Snackbar.LENGTH_LONG)
+                        Snackbar.make(layout, "Item Restored", Snackbar.LENGTH_LONG).show()
                     }
                 }.show()
                 dialogInterface.dismiss()

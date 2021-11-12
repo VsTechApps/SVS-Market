@@ -9,7 +9,7 @@ import com.tenalis.mart.models.GroceryItem
 class App : AppCompatActivity() {
 
     companion object {
-        const val PhoneNumber = "9886313788"
+        const val PhoneNumber = "9390345080"
 
         private val db = FirebaseFirestore.getInstance()
 

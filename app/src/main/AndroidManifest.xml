@@ -18,7 +18,8 @@
         <activity android:name=".AdminActivity" />
         <activity android:name=".AddActivity" />
         <activity android:name=".OrdersActivity" />
-        <activity android:name=".CartActivity">
+        <activity android:name=".CartActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
 
@@ -33,7 +34,8 @@
         <activity
             android:name=".StartActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoActionBar">
+            android:theme="@style/AppThemeNoActionBar"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

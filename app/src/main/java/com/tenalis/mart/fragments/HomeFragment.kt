@@ -33,7 +33,7 @@ class HomeFragment : Fragment(), HomeRecyclerViewAdapter.OnItemClickListener {
 
         val sliderView: SliderView = root.findViewById(R.id.imageSlider)
 
-        adapter = SliderAdapter(context!!)
+        adapter = SliderAdapter()
 
         sliderView.setSliderAdapter(adapter)
 

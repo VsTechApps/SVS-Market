@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:autofillHints="Your Name"
-        android:hint="Address"
+        android:hint="@string/address"
         android:inputType="text"
         android:lines="5"
         app:layout_constraintEnd_toEndOf="parent"
@@ -36,7 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:text="Pay with Google Pay"
+        android:text="@string/pay_with_google_pay"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/address"
         tools:layout_editor_absoluteX="20dp" />

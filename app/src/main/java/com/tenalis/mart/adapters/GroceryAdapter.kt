@@ -45,8 +45,6 @@ class GroceryAdapter(
         holder.originalPrice.paint.isStrikeThruText = true
         holder.originalPrice.text = model.realPrice
 
-//        Toast.makeText(context, model.outOfStock, Toast.LENGTH_SHORT).show()
-
         if (model.outOfStock == "true") {
             holder.outOfStock.visibility = View.VISIBLE
         } else {

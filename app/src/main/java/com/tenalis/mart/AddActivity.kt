@@ -21,6 +21,9 @@ class AddActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add)
 
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+
         val cartRef =
             db.collection("users").document(auth.currentUser?.uid!!).collection("cart")
 
@@ -76,5 +79,10 @@ class AddActivity : AppCompatActivity() {
                     ).show()
                 }
         }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 }

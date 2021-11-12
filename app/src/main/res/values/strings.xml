@@ -28,7 +28,7 @@
     <string name="item_price">Item Price</string>
     <string name="mrp">MRP</string>
     <string name="food">food</string>
-    <string name="grocery">Grocery</string>
+    <string name="grocery">grocery</string>
     <string name="beverage">beverage</string>
     <string name="detergents">detergents</string>
     <string name="other">other</string>
@@ -59,4 +59,9 @@
     <string name="_3">3</string>
     <string name="save">Save</string>
     <string name="add_items">Add Items</string>
+    <string name="ad1">Ad1</string>
+    <string name="ad2">Ad2</string>
+    <string name="out_of_stock">Out of stock</string>
+    <string name="pay_with_google_pay">Pay with Google Pay</string>
+    <string name="count_1">Count : 1</string>
 </resources>
